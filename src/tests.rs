@@ -32,6 +32,7 @@ mod tests {
             None,     // repeat
             None,     // resize_width
             None,     // resize_height
+            None,     // callback
         );
 
         // Basic sanity check - ensure we get some output
@@ -44,7 +45,7 @@ mod tests {
     #[should_panic(expected = "Only a single image file was given as an input")]
     fn test_single_frame_validation() {
         let frame = create_test_frame(2, 2, 0);
-        encode(&frame, 1, 2, 2, Some(10), None, None, None, None, None);
+        encode(&frame, 1, 2, 2, Some(10), None, None, None, None, None, None);
     }
 
     #[test]
@@ -66,6 +67,7 @@ mod tests {
             None,
             None,
             None,
+            None,
         );
 
         assert!(!result.is_empty());
@@ -78,7 +80,7 @@ mod tests {
         encode(
             &frames, 2, 2, 2, None, // fps
             None, // frame_durations
-            None, None, None, None,
+            None, None, None, None, None,
         );
     }
 
@@ -97,6 +99,7 @@ mod tests {
             None,
             None,
             None,
+            None,
         );
     }
 
@@ -111,6 +114,7 @@ mod tests {
             2,
             None,
             Some(vec![100]), // Only one duration for two frames
+            None,
             None,
             None,
             None,

@@ -36,14 +36,14 @@ type Frames = Array<Uint8Array | ImageData>;
 
 type BaseEncodeOptions = {
   frames:
-    | Frames
-    | Array<{ imageData: Uint8Array | ImageData; duration: number }>;
+    Frames | Array<{ imageData: Uint8Array | ImageData; duration: number }>;
   width: number;
   height: number;
   quality?: number;
   repeat?: number;
   resizeWidth?: number;
   resizeHeight?: number;
+  progressCallback?: (bytesWritted: number) => boolean;
 };
 
 export type EncodeOptions =
@@ -68,6 +68,7 @@ export async function _internal_encode(
     repeat,
     resizeWidth,
     resizeHeight,
+    progressCallback,
   }: EncodeOptions
 ): Promise<Uint8Array> {
   if (frames.length === 1) {
@@ -128,7 +129,8 @@ export async function _internal_encode(
     quality,
     repeat,
     resizeWidth,
-    resizeHeight
+    resizeHeight,
+    progressCallback
   );
   if (!buffer) throw new Error('Encoding error.');
 
