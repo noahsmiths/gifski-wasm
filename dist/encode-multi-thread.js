@@ -32,7 +32,7 @@ export async function encode(options) {
     const { encode: wasmEncode } = await init();
     return _internal_encode(wasmEncode, options);
 }
-export function get_bytes_written() {
+export function getBytesWritten() {
     return get_written_bytes();
 }
 export default encode;

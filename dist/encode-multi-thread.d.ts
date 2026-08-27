@@ -8,6 +8,6 @@ declare function initST(moduleOrPath?: InitInput): Promise<{
 }>;
 export declare function init(moduleOrPath?: InitInput): Promise<ReturnType<typeof initMT | typeof initST>>;
 export declare function encode(options: EncodeOptions): Promise<Uint8Array>;
-export declare function get_bytes_written(): number;
+export declare function getBytesWritten(): number;
 export default encode;
 //# sourceMappingURL=encode-multi-thread.d.ts.map
