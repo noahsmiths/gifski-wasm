@@ -99,7 +99,7 @@ dependencies = [
 [[package]]
 name = "gifski-lite"
 version = "1.32.0"
-source = "git+https://github.com/noahsmiths/gifski-lite.git?branch=main#57cb6542ce28d03cc77ce44289f5f0961ac30eb5"
+source = "git+https://github.com/noahsmiths/gifski-lite.git?branch=main#5ab2e1a568b67c43e00b810dc3c99a87caa383bf"
 dependencies = [
  "crossbeam-channel",
  "crossbeam-utils",
