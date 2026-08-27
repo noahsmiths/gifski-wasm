@@ -118,13 +118,16 @@ pub fn encode(
 
     impl progress::ProgressReporter for Callback {
         fn increase(&mut self) -> bool {
+            unsafe {
+                WRITTEN_BYTE_COUNT += 1;
+            }
             true
         }
-        fn written_bytes(&mut self, bytes: u64) {
-            unsafe {
-                WRITTEN_BYTE_COUNT = bytes as u32;
-            }
-        }
+        // fn written_bytes(&mut self, bytes: u64) {
+            // unsafe {
+            //     WRITTEN_BYTE_COUNT = bytes as u32;
+            // }
+        // }
     }
 
     match writer.write(&mut buffer, &mut Callback {}) {
