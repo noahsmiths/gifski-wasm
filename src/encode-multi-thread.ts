@@ -48,7 +48,7 @@ export async function encode(options: EncodeOptions): Promise<Uint8Array> {
   return _internal_encode(wasmEncode, options);
 }
 
-export function getBytesWritten(): number {
+export function getWrittenBytes(): number {
   return get_written_bytes();
 }
 
