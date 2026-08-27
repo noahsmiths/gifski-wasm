@@ -3,7 +3,7 @@
 /**
 * @returns {number}
 */
-export function get_written_bytes(): number;
+export function get_counter_mem_address(): number;
 /**
 * @param {Uint8Array} frames
 * @param {number} num_of_frames
@@ -47,7 +47,7 @@ export class wbg_rayon_PoolBuilder {
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
-  readonly get_written_bytes: () => number;
+  readonly get_counter_mem_address: () => number;
   readonly encode: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number) => void;
   readonly __wbg_wbg_rayon_poolbuilder_free: (a: number) => void;
   readonly wbg_rayon_poolbuilder_numThreads: (a: number) => number;

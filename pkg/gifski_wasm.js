@@ -20,9 +20,9 @@ function getStringFromWasm0(ptr, len) {
 /**
 * @returns {number}
 */
-export function get_written_bytes() {
-    const ret = wasm.get_written_bytes();
-    return ret;
+export function get_counter_mem_address() {
+    const ret = wasm.get_counter_mem_address();
+    return ret >>> 0;
 }
 
 let WASM_VECTOR_LEN = 0;

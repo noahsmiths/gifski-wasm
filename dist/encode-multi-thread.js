@@ -1,10 +1,11 @@
 import { threads } from 'wasm-feature-detect';
 import { _internal_encode } from './encode';
 async function initMT(moduleOrPath, maybeMemory) {
-    const { default: init, initThreadPool, encode, } = await import('../pkg-parallel/gifski_wasm.js');
-    await init(moduleOrPath, maybeMemory);
+    const { default: init, initThreadPool, encode, get_counter_mem_address } = await import('../pkg-parallel/gifski_wasm.js');
+    const { memory } = await init(moduleOrPath, maybeMemory);
     await initThreadPool(globalThis.navigator.hardwareConcurrency);
-    return { encode };
+    const counterAddress = get_counter_mem_address();
+    return { encode, counterAddress, memory };
 }
 async function initST(moduleOrPath) {
     const { default: init, encode } = await import('../pkg/gifski_wasm.js');
@@ -28,12 +29,13 @@ export async function init(moduleOrPath, maybeMemory) {
     return wasmReady;
 }
 export async function encode(options, memory) {
-    const { encode: wasmEncode } = await init(undefined, memory);
-    return _internal_encode(wasmEncode, options);
-}
-export async function getWrittenBytes(memory) {
-    const { default: init, get_written_bytes } = await import('../pkg-parallel/gifski_wasm.js');
-    await init(undefined, memory);
-    return get_written_bytes();
+    const { encode: wasmEncode, counterAddress, memory: returnedMemory } = await init(undefined, memory);
+    return {
+        start: () => {
+            _internal_encode(wasmEncode, options);
+        },
+        counterAddress,
+        returnedMemory,
+    };
 }
 export default encode;

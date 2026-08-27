@@ -11,13 +11,13 @@ use wasm_bindgen::prelude::*;
 use gifski_lite::*;
 use imgref::*;
 use rgb::*;
-use std::{io::Cursor, sync::Mutex};
+use std::io::Cursor;
 
-static WRITTEN_BYTE_COUNT: Mutex<u64> = Mutex::new(0);
+static mut WRITTEN_BYTE_COUNT: u32 = 0;
 
 #[wasm_bindgen]
-pub fn get_written_bytes() -> f64 {
-    *WRITTEN_BYTE_COUNT.lock().unwrap() as f64
+pub fn get_counter_mem_address() -> u32 {
+    unsafe { std::ptr::addr_of!(WRITTEN_BYTE_COUNT) as u32 }
 }
 
 #[wasm_bindgen]
@@ -108,7 +108,9 @@ pub fn encode(
 
     drop(collector);
 
-    *WRITTEN_BYTE_COUNT.lock().unwrap() = 0;
+    unsafe {
+        WRITTEN_BYTE_COUNT = 0;
+    }
 
     struct Callback {}
 
@@ -119,7 +121,9 @@ pub fn encode(
             true
         }
         fn written_bytes(&mut self, bytes: u64) {
-            *WRITTEN_BYTE_COUNT.lock().unwrap() = bytes;
+            unsafe {
+                WRITTEN_BYTE_COUNT = bytes as u32;
+            }
         }
     }
 
