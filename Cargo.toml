@@ -10,7 +10,7 @@ wasm-opt = ["-O", "--no-validation"]
 crate-type = ["cdylib"]
 
 [dependencies]
-gifski-lite = { git = "https://github.com/jamsinclair/gifski-lite.git", branch = "main" }
+gifski-lite = { git = "https://github.com/noahsmiths/gifski-lite.git", branch = "main" }
 imgref = "1.9.1"
 rgb = "0.8.31"
 wasm-bindgen = "0.2.92"
