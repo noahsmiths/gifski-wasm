@@ -48,9 +48,9 @@ export async function init(
 export async function encode(options: EncodeOptions, memory?: WebAssembly.Memory) {
   const { encode: wasmEncode, counterAddress, memory: returnedMemory } = await init(undefined, memory) as any;
   return { 
-    start: () => {
+    start: () => (
       _internal_encode(wasmEncode, options)
-    },
+    ),
     counterAddress,
     returnedMemory,
   };

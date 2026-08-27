@@ -10,7 +10,7 @@ declare function initST(moduleOrPath?: InitInput): Promise<{
 }>;
 export declare function init(moduleOrPath?: InitInput, maybeMemory?: WebAssembly.Memory): Promise<ReturnType<typeof initMT | typeof initST>>;
 export declare function encode(options: EncodeOptions, memory?: WebAssembly.Memory): Promise<{
-    start: () => void;
+    start: () => Promise<Uint8Array<ArrayBufferLike>>;
     counterAddress: any;
     returnedMemory: any;
 }>;

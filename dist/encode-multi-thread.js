@@ -31,9 +31,7 @@ export async function init(moduleOrPath, maybeMemory) {
 export async function encode(options, memory) {
     const { encode: wasmEncode, counterAddress, memory: returnedMemory } = await init(undefined, memory);
     return {
-        start: () => {
-            _internal_encode(wasmEncode, options);
-        },
+        start: () => (_internal_encode(wasmEncode, options)),
         counterAddress,
         returnedMemory,
     };
