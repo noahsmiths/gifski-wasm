@@ -21,7 +21,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "rustup toolchain install && curl https://wasm-bindgen.github.io/wasm-pack/installer/init.sh -sSf | sh",
+	"postCreateCommand": "rustup toolchain install && curl https://wasm-bindgen.github.io/wasm-pack/installer/init.sh -sSf | sh && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.7/install.sh | bash",
 
 	// Configure tool-specific properties.
 	"customizations": {
