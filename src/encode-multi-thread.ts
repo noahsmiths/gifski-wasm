@@ -1,15 +1,14 @@
 import type { InitInput } from '../pkg/gifski_wasm.js';
 import { threads } from 'wasm-feature-detect';
 import { _internal_encode, EncodeOptions } from './encode';
-import { get_written_bytes } from '../pkg-parallel/gifski_wasm.js';
 
-async function initMT(moduleOrPath?: InitInput) {
+async function initMT(moduleOrPath?: InitInput, maybeMemory?: WebAssembly.Memory) {
   const {
     default: init,
     initThreadPool,
     encode,
   } = await import('../pkg-parallel/gifski_wasm.js');
-  await init(moduleOrPath);
+  await init(moduleOrPath, maybeMemory);
   await initThreadPool(globalThis.navigator.hardwareConcurrency);
   return { encode };
 }
@@ -23,7 +22,8 @@ async function initST(moduleOrPath?: InitInput) {
 let wasmReady: ReturnType<typeof initMT | typeof initST>;
 
 export async function init(
-  moduleOrPath?: InitInput
+  moduleOrPath?: InitInput,
+  maybeMemory?: WebAssembly.Memory
 ): Promise<ReturnType<typeof initMT | typeof initST>> {
   if (!wasmReady) {
     const hasHardwareConcurrency =
@@ -34,7 +34,7 @@ export async function init(
       self instanceof WorkerGlobalScope;
 
     if (isWorker && hasHardwareConcurrency && (await threads())) {
-      wasmReady = initMT(moduleOrPath);
+      wasmReady = initMT(moduleOrPath, maybeMemory);
     } else {
       wasmReady = initST(moduleOrPath);
     }
@@ -43,12 +43,17 @@ export async function init(
   return wasmReady;
 }
 
-export async function encode(options: EncodeOptions): Promise<Uint8Array> {
-  const { encode: wasmEncode } = await init();
+export async function encode(options: EncodeOptions, memory?: WebAssembly.Memory): Promise<Uint8Array> {
+  const { encode: wasmEncode } = await init(undefined, memory);
   return _internal_encode(wasmEncode, options);
 }
 
-export function getWrittenBytes(): number {
+export async function getWrittenBytes(memory?: WebAssembly.Memory): Promise<number> {
+  const {
+    default: init,
+    get_written_bytes
+  } = await import('../pkg-parallel/gifski_wasm.js');
+  await init(undefined, memory);
   return get_written_bytes();
 }
 
