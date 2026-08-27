@@ -25,6 +25,7 @@ pub fn encode(
     repeat: Option<i32>,
     resize_width: Option<u32>,
     resize_height: Option<u32>,
+    callback: Option<js_sys::Function>
 ) -> Vec<u8> {
     #[cfg(feature = "debug")]
     console_error_panic_hook::set_once();
@@ -101,7 +102,44 @@ pub fn encode(
 
     drop(collector);
 
-    match writer.write(&mut buffer, &mut progress::NoProgress {}) {
+    struct Callback {
+        should_abort: bool,
+        callback: js_sys::Function,
+    }
+
+    unsafe impl Send for Callback {}
+
+    impl progress::ProgressReporter for Callback {
+        fn increase(&mut self) -> bool {
+            self.should_abort
+        }
+        fn written_bytes(&mut self, current_file_size_in_bytes: u64) {
+            let result = self.callback.call1(&JsValue::NULL, &JsValue::from(current_file_size_in_bytes as f64));
+            self.should_abort = match result {
+                Ok(val) => {
+                    val.as_bool().unwrap_or(false)
+                }
+                Err(_) => {
+                    false
+                }
+            }
+        }
+    }
+
+    let mut no_progress = progress::NoProgress {};
+    let mut callback_struct;
+
+    let progress_callback: &mut dyn progress::ProgressReporter = match callback {
+        Some(cb) => {
+            callback_struct = Callback { should_abort: false, callback: cb };
+            &mut callback_struct
+        }
+        None => {
+            &mut no_progress
+        }
+    };
+
+    match writer.write(&mut buffer, progress_callback) {
         Ok(_) => (),
         Err(error) => panic!("Problem writing the gif: {:?}", error),
     }
