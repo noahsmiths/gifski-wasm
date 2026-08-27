@@ -11,7 +11,14 @@ use wasm_bindgen::prelude::*;
 use gifski_lite::*;
 use imgref::*;
 use rgb::*;
-use std::io::Cursor;
+use std::{io::Cursor, sync::Mutex};
+
+static WRITTEN_BYTE_COUNT: Mutex<u64> = Mutex::new(0);
+
+#[wasm_bindgen]
+pub fn get_written_bytes() -> f64 {
+    *WRITTEN_BYTE_COUNT.lock().unwrap() as f64
+}
 
 #[wasm_bindgen]
 pub fn encode(
@@ -101,7 +108,22 @@ pub fn encode(
 
     drop(collector);
 
-    match writer.write(&mut buffer, &mut progress::NoProgress {}) {
+    *WRITTEN_BYTE_COUNT.lock().unwrap() = 0;
+
+    struct Callback {}
+
+    unsafe impl Send for Callback {}
+
+    impl progress::ProgressReporter for Callback {
+        fn increase(&mut self) -> bool {
+            true
+        }
+        fn written_bytes(&mut self, bytes: u64) {
+            *WRITTEN_BYTE_COUNT.lock().unwrap() = bytes;
+        }
+    }
+
+    match writer.write(&mut buffer, &mut Callback {}) {
         Ok(_) => (),
         Err(error) => panic!("Problem writing the gif: {:?}", error),
     }

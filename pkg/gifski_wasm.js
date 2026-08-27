@@ -17,6 +17,13 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
+/**
+* @returns {number}
+*/
+export function get_written_bytes() {
+    const ret = wasm.get_written_bytes();
+    return ret;
+}
 
 let WASM_VECTOR_LEN = 0;
 

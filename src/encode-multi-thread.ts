@@ -1,6 +1,7 @@
 import type { InitInput } from '../pkg/gifski_wasm.js';
 import { threads } from 'wasm-feature-detect';
 import { _internal_encode, EncodeOptions } from './encode';
+import { get_written_bytes } from '../pkg-parallel/gifski_wasm.js';
 
 async function initMT(moduleOrPath?: InitInput) {
   const {
@@ -45,6 +46,10 @@ export async function init(
 export async function encode(options: EncodeOptions): Promise<Uint8Array> {
   const { encode: wasmEncode } = await init();
   return _internal_encode(wasmEncode, options);
+}
+
+export function get_bytes_written(): number {
+  return get_written_bytes();
 }
 
 export default encode;
